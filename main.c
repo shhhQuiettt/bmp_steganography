@@ -49,7 +49,10 @@ int main(int argc, char *argv[]) {
 
   BITMAPFILEHEADER *header = read_bmp_header(in_fp);
   BITMAPINFOHEADER *info_header = read_bmp_info_header(in_fp);
-  /* print_bmp_info_header(info_header); */
+
+  print_bmp_header(header);
+  print_bmp_info_header(info_header);
+
   write_bmp_header(out_fp, header);
   write_bmp_info_header(out_fp, info_header);
 
@@ -68,4 +71,5 @@ int main(int argc, char *argv[]) {
   free(header);
   free(info_header);
   free(rowBuffer);
+  free(grayedBuffer);
 }
