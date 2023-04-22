@@ -1,4 +1,5 @@
 #include "bmp_header_utils.h"
+#include "histogram.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,6 +14,7 @@ struct Pixel {
   uint8_t red;
   uint8_t blue;
 };
+
 
 FILE *open_file(char *filename, char *mode) {
   FILE *fp = fopen(filename, mode);
@@ -50,15 +52,11 @@ uint8_t *grayLine(uint8_t *lineBuffer, size_t bytesToGray, size_t fullRowSize) {
 
 int main(int argc, char *argv[]) {
   // TEMP
-  char *filename = "c.bmp";
+  char *filename = "tux.bmp";
   char *output_filename = "out.bmp";
 
-  printf("a");
-
-  /* FILE *in_fp = open_file(filename, "rb"); */
-  /* FILE *out_fp = open_file(output_filename, "wb"); */
-  FILE *in_fp = fopen(filename, "rb");
-  FILE *out_fp = fopen(output_filename, "wb");
+  FILE *in_fp = open_file(filename, "rb");
+  FILE *out_fp = open_file(output_filename, "wb");
 
   BITMAPFILEHEADER *header = read_bmp_header(in_fp);
   BITMAPINFOHEADER *info_header = read_bmp_info_header(in_fp);
@@ -77,20 +75,28 @@ int main(int argc, char *argv[]) {
 
   uint8_t *rowBuffer = malloc(sizeof(uint8_t) * fullRowSize);
   uint8_t *grayedBuffer = NULL;
-  /* Pixel *rowBuffer = malloc(sizeof(uint8_t) * fullRowSize); */
-  /* Pixel *grayedBuffer = malloc(sizeof(uint8_t) * fullRowSize); */
+
+  struct Histogram histogram = (struct Histogram){0};
+
+  printf("%d\n", histogram.red[9]);
 
   while (fread(rowBuffer, fullRowSize, 1, in_fp) == 1) {
     grayedBuffer = grayLine(rowBuffer, paddinglessRowSize, fullRowSize);
-    /* struct Pixel *pixelRow = (struct Pixel *)rowBuffer; */
 
     fwrite(grayedBuffer, fullRowSize, 1, out_fp);
 
-    for (int i = 0; i < paddinglessRowSize; i++) {
+    for (int offset = 0; offset + 3 <= paddinglessRowSize; offset += 3) {
+      histogram.blue[rowBuffer[offset] / 16]++;
+      histogram.green[rowBuffer[offset + 1] / 16]++;
+      histogram.red[rowBuffer[offset + 2] / 16]++;
     }
     free(grayedBuffer);
   }
 
+  printHistogram(&histogram);
+
+  fclose(in_fp);
+  fclose(out_fp);
   free(header);
   free(info_header);
   free(rowBuffer);
