@@ -52,3 +52,4 @@ dkms.conf
 leak.txt
 main
 .ccls-cache/
+gray_and_histogram

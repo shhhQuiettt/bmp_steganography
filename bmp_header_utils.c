@@ -18,7 +18,7 @@ void print_bmp_header(BITMAPFILEHEADER *header) {
   printf("bfSize: %d\n", header->bfSize);
   printf("bfReserved1: 0x%x\n", header->bfReserved1);
   printf("bfReserved2: 0x%x\n", header->bfReserved2);
-  printf("bfOffBits: %d\n", header->bfOffBits);
+  printf("bfOffBits: %d\n\n", header->bfOffBits);
 }
 
 void write_bmp_header(FILE *fp, BITMAPFILEHEADER *header) {
@@ -71,5 +71,5 @@ void print_bmp_info_header(BITMAPINFOHEADER *info_header) {
   printf("biXPelsPerMeter: %d\n", info_header->biXPelsPerMeter);
   printf("biYPelsPerMeter: %d\n", info_header->biYPelsPerMeter);
   printf("biClrUsed: %d\n", info_header->biClrUsed);
-  printf("biClrImportant: %d\n", info_header->biClrImportant);
+  printf("biClrImportant: %d\n\n", info_header->biClrImportant);
 }
