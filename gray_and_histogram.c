@@ -15,7 +15,6 @@ struct Pixel {
   uint8_t blue;
 };
 
-
 FILE *open_file(char *filename, char *mode) {
   FILE *fp = fopen(filename, mode);
   if (fp == NULL) {
@@ -73,22 +72,20 @@ int main(int argc, char *argv[]) {
   size_t fullRowSize =
       (info_header->biBitCount * info_header->biWidth + 31) / 32 * 4;
 
-  uint8_t *rowBuffer = malloc(sizeof(uint8_t) * fullRowSize);
+  uint8_t *fullRowBuffer = malloc(sizeof(uint8_t) * fullRowSize);
   uint8_t *grayedBuffer = NULL;
 
   struct Histogram histogram = (struct Histogram){0};
 
-  printf("%d\n", histogram.red[9]);
-
-  while (fread(rowBuffer, fullRowSize, 1, in_fp) == 1) {
-    grayedBuffer = grayLine(rowBuffer, paddinglessRowSize, fullRowSize);
+  while (fread(fullRowBuffer, fullRowSize, 1, in_fp) == 1) {
+    grayedBuffer = grayLine(fullRowBuffer, paddinglessRowSize, fullRowSize);
 
     fwrite(grayedBuffer, fullRowSize, 1, out_fp);
 
     for (int offset = 0; offset + 3 <= paddinglessRowSize; offset += 3) {
-      histogram.blue[rowBuffer[offset] / 16]++;
-      histogram.green[rowBuffer[offset + 1] / 16]++;
-      histogram.red[rowBuffer[offset + 2] / 16]++;
+      histogram.blue[fullRowBuffer[offset] / 16]++;
+      histogram.green[fullRowBuffer[offset + 1] / 16]++;
+      histogram.red[fullRowBuffer[offset + 2] / 16]++;
     }
     free(grayedBuffer);
   }
@@ -99,5 +96,5 @@ int main(int argc, char *argv[]) {
   fclose(out_fp);
   free(header);
   free(info_header);
-  free(rowBuffer);
+  free(fullRowBuffer);
 }

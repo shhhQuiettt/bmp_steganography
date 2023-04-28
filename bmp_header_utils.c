@@ -1,6 +1,7 @@
 #include "bmp_header_utils.h"
 #include <stdio.h>
 #include <stdlib.h>
+#define BMP_INFO_MIN_HEADER_SIZE 40
 
 BITMAPFILEHEADER *read_bmp_header(FILE *fp) {
   BITMAPFILEHEADER *header = malloc(sizeof(BITMAPFILEHEADER));
@@ -42,6 +43,8 @@ BITMAPINFOHEADER *read_bmp_info_header(FILE *fp) {
   fread(&header->biYPelsPerMeter, sizeof(LONG), 1, fp);
   fread(&header->biClrUsed, sizeof(DWORD), 1, fp);
   fread(&header->biClrImportant, sizeof(DWORD), 1, fp);
+  off_t paddingOffset = header->biSize - BMP_INFO_MIN_HEADER_SIZE;
+  fseek(fp, paddingOffset, SEEK_CUR);
   return header;
 }
 
@@ -57,6 +60,11 @@ void write_bmp_info_header(FILE *fp, BITMAPINFOHEADER *info_header) {
   fwrite(&info_header->biYPelsPerMeter, sizeof(LONG), 1, fp);
   fwrite(&info_header->biClrUsed, sizeof(DWORD), 1, fp);
   fwrite(&info_header->biClrImportant, sizeof(DWORD), 1, fp);
+  off_t paddingOffset = info_header->biSize - BMP_INFO_MIN_HEADER_SIZE;
+  // zeros padding
+  for (int i = 0; i < paddingOffset; i++) {
+    fputc(0, fp);
+  }
 }
 
 void print_bmp_info_header(BITMAPINFOHEADER *info_header) {
