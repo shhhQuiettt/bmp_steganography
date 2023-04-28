@@ -37,6 +37,16 @@ int main(int argc, char **argv) {
 
   short encoding_mode = out_filename != NULL ? 1 : 0;
 
+  // Asking user about decoding
+  {
+    printf("Do you want to decode the message? ([y]/n): ");
+    char response;
+    scanf("%c", &response);
+    if (response == 'n') {
+      return 0;
+    }
+  }
+
   FILE *in_fp = open_file(in_filename, "rb");
 
   BITMAPFILEHEADER *header = read_bmp_header(in_fp);
@@ -57,6 +67,7 @@ int main(int argc, char **argv) {
     write_bmp_header(out_fp, header);
     write_bmp_info_header(out_fp, info_header);
 
+    // Encoding message length
     fread(char_buffer, sizeof(uint8_t), 8, in_fp);
     encoded_char_buffer = encode_char(char_buffer, message_length);
     fwrite(encoded_char_buffer, sizeof(uint8_t), 8, out_fp);
@@ -71,6 +82,7 @@ int main(int argc, char **argv) {
       char_index++;
     }
 
+    // Copying the rest of the file
     uint8_t buf = 0;
     while (fread(&buf, sizeof(uint8_t), 1, in_fp) > 0) {
       fwrite(&buf, sizeof(uint8_t), 1, out_fp);
@@ -78,11 +90,13 @@ int main(int argc, char **argv) {
     fclose(out_fp);
 
   } else {
+    // ask user if decode
+
     uint8_t encoded_char_buffer[8];
 
     fread(encoded_char_buffer, sizeof(uint8_t), 8, in_fp);
     uint8_t message_length = decode_char(encoded_char_buffer);
-    printf("message length: %d\n", message_length);
+
     char *message = malloc(sizeof(char) * message_length + 1);
 
     int char_index = 0;
@@ -94,6 +108,7 @@ int main(int argc, char **argv) {
     message[message_length] = '\0';
 
     printf("Message: %s\n", message);
+    free(message);
   }
 
   free(header);
