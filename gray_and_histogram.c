@@ -1,5 +1,5 @@
-#include "bmp_header_utils.h"
-#include "histogram.h"
+#include "bmp_utils/bmp_header_utils.h"
+#include "bmp_utils/histogram.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,8 +51,8 @@ uint8_t *grayLine(uint8_t *lineBuffer, size_t bytesToGray, size_t fullRowSize) {
 
 int main(int argc, char *argv[]) {
   // TEMP
-  char *filename = "tux.bmp";
-  char *output_filename = "out.bmp";
+  char *filename = "img/tux.bmp";
+  char *output_filename = "img/out.bmp";
 
   FILE *in_fp = open_file(filename, "rb");
   FILE *out_fp = open_file(output_filename, "wb");
