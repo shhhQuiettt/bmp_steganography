@@ -31,11 +31,25 @@ char decode_char(uint8_t buffer[8]) {
 }
 
 int main(int argc, char **argv) {
-  char *in_filename = "img/tux.bmp";
-  char *out_filename = "img/out.bmp";
-  char *message = "abcd";
 
-  short encoding_mode = out_filename != NULL ? 1 : 0;
+      char *in_filename = "asdasd";
+      char *out_filename = "sdasd";
+      char *message = "abcd";
+      short encoding_mode = 0;
+
+
+    // if (argc < 3)
+    // {
+    //     out_filename = argv[1];
+    //     encoding_mode = 0;
+    // }
+    // else 
+    // {
+    //   in_filename = 
+
+    // }
+
+
 
   if (!encoding_mode) {
   // Asking user about decoding
