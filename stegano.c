@@ -1,5 +1,6 @@
 #include "bmp_utils/bmp_header_utils.h"
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -32,27 +33,20 @@ char decode_char(uint8_t buffer[8]) {
 
 int main(int argc, char **argv) {
 
-      char *in_filename = "asdasd";
-      char *out_filename = "sdasd";
-      char *message = "abcd";
-      short encoding_mode = 0;
+  if (argc < 2 || argc > 4) {
+    perror("Invalid number of arguments");
+    exit(1);
+  }
+  short encoding_mode = argc == 4 ? 1 : 0;
 
+  char *in_filename = argv[1];
+  char *out_filename = NULL;
+  char *message = NULL;
 
-    // if (argc < 3)
-    // {
-    //     out_filename = argv[1];
-    //     encoding_mode = 0;
-    // }
-    // else 
-    // {
-    //   in_filename = 
-
-    // }
-
-
-
-  if (!encoding_mode) {
-  // Asking user about decoding
+  if (encoding_mode) {
+    out_filename = argv[2];
+    message = argv[3];
+  } else {
     printf("Do you want to decode the message? ([y]/n): ");
     char response;
     scanf("%c", &response);
@@ -103,8 +97,6 @@ int main(int argc, char **argv) {
     fclose(out_fp);
 
   } else {
-    // ask user if decode
-
     uint8_t encoded_char_buffer[8];
 
     fread(encoded_char_buffer, sizeof(uint8_t), 8, in_fp);

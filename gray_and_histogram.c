@@ -50,9 +50,12 @@ uint8_t *grayLine(uint8_t *lineBuffer, size_t bytesToGray, size_t fullRowSize) {
 }
 
 int main(int argc, char *argv[]) {
-  // TEMP
-  char *filename = "img/tux.bmp";
-  char *output_filename = "img/out.bmp";
+  if (argc != 3) {
+    fprintf(stderr, "Usage: %s <input_file> <output_file>\n", argv[0]);
+    exit(1);
+  }
+  char *filename = argv[1];
+  char *output_filename = argv[2];
 
   FILE *in_fp = open_file(filename, "rb");
   FILE *out_fp = open_file(output_filename, "wb");
